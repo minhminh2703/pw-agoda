@@ -1,14 +1,13 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Example suite', () => {
-  test('has title', async ({ page }) => {
-    await page.goto('https://playwright.dev/');
-    await expect(page).toHaveTitle(/Playwright/);
-  });
+test.describe("Agoda Test Suite", () => {
+    test("should load Agoda homepage", async ({ page }) => {
+        await page.goto("/"); // Uses BASE_URL from .env
+        await expect(page).toHaveTitle(/Agoda/);
+    });
 
-  test('get started link', async ({ page }) => {
-    await page.goto('https://playwright.dev/');
-    await page.getByRole('link', { name: 'Get started' }).first().click();
-    await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-  });
+    test("should navigate to hotels", async ({ page }) => {
+        await page.goto("/"); // Uses BASE_URL
+        // Add your Agoda test steps here
+    });
 });
