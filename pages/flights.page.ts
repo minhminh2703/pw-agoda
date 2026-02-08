@@ -31,6 +31,18 @@ export class FlightsPage extends BasePage {
         "#autocompleteSearch-destination",
     );
 
+    // Departure Date Picker
+    readonly departureDatePicker: Locator =
+        this.page.locator("#flight-departure");
+    readonly datePickerPopup: Locator = this.page.locator(
+        ".Popup__content.DateSelector__PopupContent",
+    );
+
+    // Search Button
+    readonly searchButton: Locator = this.page.locator(
+        'button[data-element-name="flight-search"]',
+    );
+
     constructor(page: Page) {
         super(page);
         this.navigation = new Navigation(page);
@@ -176,5 +188,94 @@ export class FlightsPage extends BasePage {
             }
         }
         return airports;
+    }
+
+    /**
+     * Open the departure date picker calendar
+     */
+    async openDepartureDatePicker(): Promise<void> {
+        await this.departureDatePicker.click();
+        await this.datePickerPopup.waitFor({ state: "visible" });
+    }
+
+    /**
+     * Select a specific date from the departure calendar
+     * @param date - Date object or string in format "YYYY-MM-DD"
+     * @example await flightsPage.selectDepartureDate("2026-02-10");
+     */
+    async selectDepartureDate(date: Date | string): Promise<void> {
+        // Open calendar if not already open
+        await this.openDepartureDatePicker();
+
+        // Convert date to YYYY-MM-DD format
+        let dateString: string;
+        if (date instanceof Date) {
+            dateString = date.toISOString().split("T")[0];
+        } else {
+            dateString = date;
+        }
+
+        // Click the date using data-selenium-date attribute
+        const dateButton = this.page.locator(
+            `span[data-selenium-date="${dateString}"]`,
+        );
+        await dateButton.waitFor({ state: "visible" });
+        await dateButton.click();
+    }
+
+    /**
+     * Select departure date as today + N days
+     * @param daysFromToday - Number of days to add from today (e.g., 2 for +2 days)
+     * @example await flightsPage.selectDepartureDateFromToday(2); // Tomorrow + 2 days
+     */
+    async selectDepartureDateFromToday(daysFromToday: number): Promise<void> {
+        // Calculate the target date
+        const today = new Date();
+        const targetDate = new Date(today);
+        targetDate.setDate(targetDate.getDate() + daysFromToday);
+
+        // Convert to YYYY-MM-DD format
+        const dateString = targetDate.toISOString().split("T")[0];
+
+        // Select the date
+        await this.selectDepartureDate(dateString);
+    }
+
+    /**
+     * Get the currently selected departure date
+     * @returns Date string in format "YYYY-MM-DD" or null if not set
+     */
+    async getSelectedDepartureDate(): Promise<string | null> {
+        const dateElement = this.page.locator(
+            'div[data-element-name="flight-departure"] span',
+        );
+        try {
+            const text = await dateElement.textContent();
+            return text ? text.trim() : null;
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Click the Search Flights button
+     * @example await flightsPage.searchFlights();
+     */
+    async searchFlights(): Promise<void> {
+        await this.searchButton.click();
+    }
+
+    /**
+     * Check if the Search Flights button is visible
+     */
+    async isSearchButtonVisible(): Promise<boolean> {
+        return await this.searchButton.isVisible();
+    }
+
+    /**
+     * Check if the Search Flights button is enabled
+     */
+    async isSearchButtonEnabled(): Promise<boolean> {
+        return !(await this.searchButton.isDisabled());
     }
 }

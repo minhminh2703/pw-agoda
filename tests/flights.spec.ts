@@ -73,4 +73,62 @@ test.describe("Flights Page Tests", () => {
         expect(await flightsPage.getOriginValue()).toBe("");
         expect(await flightsPage.getDestinationValue()).toBe("");
     });
+
+    test("should select departure date as today + 2 days", async () => {
+        // Select departure date as today + 2 days
+        await flightsPage.selectDepartureDateFromToday(2);
+
+        // Verify the date was selected (calendar should close)
+        const isVisible = await flightsPage.datePickerPopup
+            .isVisible()
+            .catch(() => false);
+        expect(isVisible).toBe(false);
+    });
+
+    test("should select specific departure date", async () => {
+        // Select a specific date: 2026-02-15
+        await flightsPage.selectDepartureDate("2026-02-15");
+
+        // Verify the date was selected
+        const isVisible = await flightsPage.datePickerPopup
+            .isVisible()
+            .catch(() => false);
+        expect(isVisible).toBe(false);
+    });
+
+    test("should select departure date using Date object", async () => {
+        // Create a date object for 2026-02-20
+        const departureDate = new Date(2026, 1, 20); // Month is 0-indexed
+
+        // Select the date
+        await flightsPage.selectDepartureDate(departureDate);
+
+        // Verify the date was selected
+        const isVisible = await flightsPage.datePickerPopup
+            .isVisible()
+            .catch(() => false);
+        expect(isVisible).toBe(false);
+    });
+
+    test("should complete full flight search", async () => {
+        // Select origin and destination
+        await flightsPage.selectOrigin("Ho Chi Minh", "SGN");
+        await flightsPage.selectDestination("Bangkok", "BKK");
+
+        // Select departure date (today + 2 days)
+        await flightsPage.selectDepartureDateFromToday(2);
+
+        // Verify all selections before searching
+        expect(await flightsPage.getOriginValue()).toContain("Ho Chi Minh");
+        expect(await flightsPage.getDestinationValue()).toContain("Bangkok");
+
+        // Verify search button is enabled
+        expect(await flightsPage.isSearchButtonEnabled()).toBe(true);
+
+        // Click search button
+        await flightsPage.searchFlights();
+
+        // Wait for search results to load
+        await flightsPage.page.waitForLoadState("domcontentloaded");
+    });
 });
