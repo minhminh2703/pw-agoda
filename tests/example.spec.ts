@@ -8,6 +8,5 @@ test.describe("Agoda Test Suite", () => {
 
     test("should navigate to hotels", async ({ page }) => {
         await page.goto("/"); // Uses BASE_URL
-        // Add your Agoda test steps here
     });
 });
