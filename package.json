@@ -4,12 +4,16 @@
   "description": "Playwright tests with Allure reporting",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui",
-    "report:generate": "allure generate -o allure-report allure-results",
+    "test": "npx playwright test && npm run report:generate && npm run report:show",
+    "test:headed": "npx playwright test --headed && npm run report:generate && npm run report:show",
+    "test:flights": "npx playwright test tests/flights.spec.ts && npm run report:generate && npm run report:show",
+    "test:navigation": "npx playwright test tests/navigation.spec.ts && npm run report:generate && npm run report:show",
+    "test:ui": "npx playwright test --ui",
+    "test:only": "npx playwright test",
+    "report:generate": "rm -rf allure-report && allure generate -o allure-report allure-results",
     "report:open": "allure open allure-report",
-    "report:clean": "rm -rf allure-results && mkdir -p allure-results"
+    "report:show": "echo '\n✅ Test execution completed!\n📊 Allure report generated at: allure-report/index.html\n🔗 To view the report, run: npm run report:open\n'",
+    "report:clean": "rm -rf allure-results allure-report && mkdir -p allure-results"
   },
   "keywords": [],
   "author": "",
