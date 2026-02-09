@@ -47,42 +47,56 @@ export default defineConfig({
 
     /* Global timeout for each test - 2 minutes */
     timeout: 120000,
-    projects: [
-        {
-            name: "chromium",
-            use: { ...devices["Desktop Chrome"] },
-        },
+    projects: (() => {
+        const allProjects = [
+            {
+                name: "chromium",
+                use: { ...devices["Desktop Chrome"] },
+            },
 
-        {
-            name: "firefox",
-            use: { ...devices["Desktop Firefox"] },
-        },
+            {
+                name: "firefox",
+                use: { ...devices["Desktop Firefox"] },
+            },
 
-        {
-            name: "webkit",
-            use: { ...devices["Desktop Safari"] },
-        },
+            {
+                name: "webkit",
+                use: { ...devices["Desktop Safari"] },
+            },
+        ];
 
-        /* Test against mobile viewports. */
-        // {
-        //   name: 'Mobile Chrome',
-        //   use: { ...devices['Pixel 5'] },
-        // },
-        // {
-        //   name: 'Mobile Safari',
-        //   use: { ...devices['iPhone 12'] },
-        // },
+        // Filter projects based on BROWSERS environment variable
+        const browsersEnv = process.env.BROWSERS;
+        if (!browsersEnv) {
+            // If BROWSERS is not set, run all browsers
+            return allProjects;
+        }
 
-        /* Test against branded browsers. */
-        // {
-        //   name: 'Microsoft Edge',
-        //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-        // },
-        // {
-        //   name: 'Google Chrome',
-        //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-        // },
-    ],
+        const selectedBrowsers = browsersEnv.split(",").map((b) => b.trim());
+        return allProjects.filter((project) =>
+            selectedBrowsers.includes(project.name),
+        );
+    })(),
+
+    /* Test against mobile viewports. */
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
+    // },
+
+    /* Test against branded browsers. */
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    // },
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    // },
 
     /* Run your local dev server before starting the tests */
     // webServer: {

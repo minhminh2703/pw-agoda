@@ -3,6 +3,7 @@
 2. Add file `.env` 
 ```
 BASE_URL=https://www.agoda.com
+BROWSER=chromium
 ```
 
 
