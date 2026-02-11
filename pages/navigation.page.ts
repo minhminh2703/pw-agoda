@@ -55,7 +55,8 @@ export class Navigation extends BasePage {
      * @returns The NavigationTab enum value of the active tab
      */
     async getActiveTab(): Promise<NavigationTab | null> {
-        const activeTab = this.page.locator(
+        // Scope the locator to the tabs container to avoid matching other tabs on the page
+        const activeTab = this.tabsContainer.locator(
             '[role="tab"][aria-selected="true"]',
         );
         const dataSelenium = await activeTab.getAttribute("data-selenium");
