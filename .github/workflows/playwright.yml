@@ -29,10 +29,12 @@ jobs:
               run: npm ci
 
             - name: Install Playwright browsers
-              run: npx playwright install --with-deps chromium
+              run: npx playwright install --with-deps chromium firefox webkit
 
             - name: Run Playwright tests
               run: npm run test
+              env:
+                  PLAYWRIGHT_TEST_BASE_URL: ${{ secrets.PLAYWRIGHT_TEST_BASE_URL }}
 
             - name: Generate Allure report
               if: always()
