@@ -36,7 +36,10 @@ export default defineConfig({
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('')`. */
-        baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || process.env.BASE_URL || "https://www.agoda.com",
+        baseURL:
+            process.env.PLAYWRIGHT_TEST_BASE_URL ||
+            process.env.BASE_URL ||
+            "https://www.agoda.com",
         /* Implicit wait timeout for actions (click, fill, etc.) - 30 seconds */
         actionTimeout: 30000,
         /* Implicit wait timeout for navigation (goto, reload, etc.) - 30 seconds */
